@@ -18,39 +18,17 @@ public class AttendanceMarkRepositoryTest {
     @Autowired
     AttendanceMarkRepository basicTestRepo;
 
-    public void loadBasicTestRepo(){
-        basicTestRepo.save(new AttendanceMark("Katie", "COMP220", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Belinda", "COMP220", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Jose", "COMP220", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Aaron", "COMP220", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Kaitlyn", "COMP220", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Jocelyn", "COMP172", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Jose", "COMP172", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Monica", "COMP172", 1, "present"));
-        basicTestRepo.save(new AttendanceMark("Katie", "COMP172", 1, "present"));
-
-        basicTestRepo.save(new AttendanceMark("Katie", "COMP220", 2, "absent"));
-        basicTestRepo.save(new AttendanceMark("Belinda", "COMP220", 2, "present"));
-        basicTestRepo.save(new AttendanceMark("Jose", "COMP220", 2, "absent"));
-        basicTestRepo.save(new AttendanceMark("Aaron", "COMP220", 2, "present"));
-        basicTestRepo.save(new AttendanceMark("Kaitlyn", "COMP220", 2, "absent"));
-        basicTestRepo.save(new AttendanceMark("Jocelyn", "COMP172", 2, "present"));
-        basicTestRepo.save(new AttendanceMark("Jose", "COMP172", 2, "absent"));
-        basicTestRepo.save(new AttendanceMark("Monica", "COMP172",2, "present"));
-        basicTestRepo.save(new AttendanceMark("Katie", "COMP172", 2, "present"));
-    }
-
     @Test
     public void testSave(){
         assertTrue(basicTestRepo.findAll().isEmpty());
-        loadBasicTestRepo();
+        basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         List<AttendanceMark> attendanceMarks = basicTestRepo.findAll();
         assertEquals(18, attendanceMarks.size());
     }
 
     @Test
     public void testFindByCourseId(){
-        loadBasicTestRepo();
+        basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(10, basicTestRepo.findByCourseId("COMP220").size());
         assertEquals(8, basicTestRepo.findByCourseId("COMP172").size());
 
@@ -59,7 +37,7 @@ public class AttendanceMarkRepositoryTest {
 
     @Test
     public void testFindByStudentId(){
-        loadBasicTestRepo();
+        basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(4, basicTestRepo.findByStudentId("Katie").size());
         assertEquals(4, basicTestRepo.findByStudentId("Jose").size());
         assertEquals(2, basicTestRepo.findByStudentId("Belinda").size());
@@ -70,7 +48,7 @@ public class AttendanceMarkRepositoryTest {
     
     @Test
     public void testFindByDayNumber(){
-        loadBasicTestRepo();
+        basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(9, basicTestRepo.findByDayNumber(1).size());
         assertEquals(9, basicTestRepo.findByDayNumber(2).size());
 
