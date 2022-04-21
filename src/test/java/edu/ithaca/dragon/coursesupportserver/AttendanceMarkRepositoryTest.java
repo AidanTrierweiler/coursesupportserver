@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 
 @DataJpaTest
-@TestPropertySource(locations="classpath:test.properties")
+// @TestPropertySource(locations="classpath:test.properties")
 public class AttendanceMarkRepositoryTest {
 
     @Autowired
