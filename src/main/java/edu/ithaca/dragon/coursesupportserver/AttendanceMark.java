@@ -23,7 +23,15 @@ public class AttendanceMark {
 	@Column(name = "status")
 	private String status;
     
+    public AttendanceMark() {}
     
+    public AttendanceMark(String studentId, String courseId, int dayNumber, String status) {
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.dayNumber = dayNumber;
+        this.status = status;
+    }
+
     public long getId() {
         return id;
     }
