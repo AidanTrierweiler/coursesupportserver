@@ -1,9 +1,11 @@
 package edu.ithaca.dragon.coursesupportserver;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +51,14 @@ public class AttendanceMarkContollerTest {
     }
 
     @Test
-    void testRecordAttendance() {
-
+    public void generateAttendanceReportTest() throws Exception {
+        List<AttendanceMark> marksFor220 = AttendanceMarkRespositoryExamples.basicTestRepoList().stream().filter(mark-> mark.getCourseId().equals( "COMP220")).collect(Collectors.toList());
+        when(attendanceMarkRepository.findByCourseId("COMP220")).thenReturn(marksFor220);
+        mockMvc.perform(get("/api/attendanceReport?courseId=COMP220"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(5))
+            .andExpect(jsonPath("$.[*].size()").value(2))
+            ;
     }
 }
