@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
-public class AttendanceMarkContoller {
+public class AttendanceMarkController {
     @Autowired
     AttendanceMarkRepository attendanceMarkRepository;
 
@@ -60,4 +60,5 @@ public class AttendanceMarkContoller {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
