@@ -3,12 +3,18 @@ package edu.ithaca.dragon.coursesupportserver.reportmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ithaca.dragon.coursesupportserver.AttendanceMark;
+
 public class AttendanceStudentReport{
     private String name;
     private List<AttendanceReportMark> marks;
     
-    public AttendanceStudentReport() {
-        marks = new ArrayList<>();
+    public AttendanceStudentReport() {}
+
+    public AttendanceStudentReport(AttendanceMark markToStartWith){
+        this.name = markToStartWith.getStudentId();
+        this.marks = new ArrayList<>();
+        marks.add(new AttendanceReportMark(markToStartWith.getDayNumber(), markToStartWith.getStatus()));
     }
     
     public AttendanceStudentReport(String name, List<AttendanceReportMark> marks) {

@@ -77,8 +77,7 @@ public class AttendanceMarkController {
                 previousMarks.getMarks().add(new AttendanceReportMark(mark.getDayNumber(), mark.getStatus()));
             }
             else {
-                AttendanceStudentReport newStudentMarks = new AttendanceStudentReport();
-                newStudentMarks.getMarks().add(new AttendanceReportMark(mark.getDayNumber(), mark.getStatus()));
+                AttendanceStudentReport newStudentMarks = new AttendanceStudentReport(mark);
                 student2marks.put(mark.getStudentId(), newStudentMarks);
             }
         }
