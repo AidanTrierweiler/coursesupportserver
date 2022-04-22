@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,8 +56,10 @@ public class AttendanceMarkContollerTest {
         mockMvc.perform(get("/api/attendanceReport?courseId=COMP220"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.size()").value(5))
-            .andExpect(jsonPath("$.[*].size()").value(2))
+            .andExpect(jsonPath("$.courseId").value("COMP220"))
+            .andExpect(jsonPath("$.studentReports.size()").value(5))
+            .andExpect(jsonPath("$.studentReports.[0].marks.size()").value(2))
+            .andExpect(jsonPath("$.studentReports.[0].marks.size()").value(2))
             ;
     }
 }

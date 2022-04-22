@@ -1,13 +1,10 @@
 package edu.ithaca.dragon.coursesupportserver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.ithaca.dragon.coursesupportserver.reportmodel.AttendanceCourseReport;
+import edu.ithaca.dragon.coursesupportserver.reportmodel.AttendanceReportMark;
+import edu.ithaca.dragon.coursesupportserver.reportmodel.AttendanceStudentReport;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -67,21 +68,22 @@ public class AttendanceMarkController {
     }
 
     @GetMapping("/attendanceReport")
-    public ResponseEntity<Map<String, List<String>>> generateAttendanceReport( @RequestParam String courseId){
-        Map<String, List<String>> student2marks = new TreeMap<>();
+    public ResponseEntity<AttendanceCourseReport> generateAttendanceReport( @RequestParam String courseId){
+        Map<String, AttendanceStudentReport> student2marks = new TreeMap<>();
         List<AttendanceMark> marks = attendanceMarkRepository.findByCourseId(courseId);
         for (AttendanceMark mark : marks){
-            List<String> previousMarks = student2marks.get(mark.getStudentId());
+            AttendanceStudentReport previousMarks = student2marks.get(mark.getStudentId());
             if (previousMarks != null){
-                previousMarks.add(mark.getStatus());
+                previousMarks.getMarks().add(new AttendanceReportMark(mark.getDayNumber(), mark.getStatus()));
             }
             else {
-                List<String> newStudentMarks = new ArrayList<>();
-                newStudentMarks.add(mark.getStatus());
+                AttendanceStudentReport newStudentMarks = new AttendanceStudentReport();
+                newStudentMarks.getMarks().add(new AttendanceReportMark(mark.getDayNumber(), mark.getStatus()));
                 student2marks.put(mark.getStudentId(), newStudentMarks);
             }
         }
-        return new ResponseEntity<>(student2marks, HttpStatus.OK);
+        AttendanceCourseReport report = new AttendanceCourseReport(courseId, student2marks.values());
+        return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
 }
