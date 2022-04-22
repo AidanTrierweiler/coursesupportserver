@@ -1,13 +1,10 @@
 package edu.ithaca.dragon.coursesupportserver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -16,14 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(AttendanceMarkContoller.class)
+@WebMvcTest(AttendanceMarkController.class)
 public class AttendanceMarkContollerTest {
     @MockBean
     private AttendanceMarkRepository attendanceMarkRepository;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper ObjectMapper;
     
     @Test
     void testGetAllAttendanceMarks() throws Exception {
