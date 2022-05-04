@@ -69,9 +69,13 @@ public class AttendanceMarkController {
 
     @GetMapping("/attendanceReport")
     public ResponseEntity<AttendanceCourseReport> generateAttendanceReport( @RequestParam String courseId){
+        AttendanceCourseReport report = generateAttendanceReport(courseId, attendanceMarkRepository.findByCourseId(courseId));
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+    public static AttendanceCourseReport generateAttendanceReport( String courseId, List<AttendanceMark> marksToUse){
         Map<String, AttendanceStudentReport> student2marks = new TreeMap<>();
-        List<AttendanceMark> marks = attendanceMarkRepository.findByCourseId(courseId);
-        for (AttendanceMark mark : marks){
+        for (AttendanceMark mark : marksToUse){
             AttendanceStudentReport previousMarks = student2marks.get(mark.getStudentId());
             if (previousMarks != null){
                 previousMarks.getMarks().add(new AttendanceReportMark(mark.getDayNumber(), mark.getStatus()));
@@ -81,8 +85,6 @@ public class AttendanceMarkController {
                 student2marks.put(mark.getStudentId(), newStudentMarks);
             }
         }
-        AttendanceCourseReport report = new AttendanceCourseReport(courseId, student2marks.values());
-        return new ResponseEntity<>(report, HttpStatus.OK);
-    }
-
+        return  new AttendanceCourseReport(courseId, student2marks.values());
+    } 
 }
