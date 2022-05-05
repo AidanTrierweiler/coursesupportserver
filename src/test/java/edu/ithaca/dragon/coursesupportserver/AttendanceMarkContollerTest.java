@@ -71,7 +71,7 @@ public class AttendanceMarkContollerTest {
     public void generateAttendanceReportTest() throws Exception {
         List<AttendanceMark> marksFor220 = AttendanceMarkRespositoryExamples.basicTestRepoList().stream().filter(mark-> mark.getCourseId().equals( "COMP220")).collect(Collectors.toList());
         AttendanceCourseReport report = AttendanceMarkController.generateAttendanceReport("COMP220", marksFor220);
-        System.out.println(JsonUtil.toJsonString(report));
+        JsonUtil.toJsonFile("src/test/java/edu/ithaca/dragon/coursesupportserver/AttendanceCourseReportExample.json", report);
     }
 
 }
