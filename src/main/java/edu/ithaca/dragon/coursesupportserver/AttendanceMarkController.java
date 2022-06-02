@@ -60,13 +60,19 @@ public class AttendanceMarkController {
         }
     }
 
+    @GetMapping("/recentAttendanceMarks")
+    public ResponseEntity<List<AttendanceMark>> findMostRecentAttendanceMarks(@RequestParam(required=false) String courseId){
+        List<AttendanceMark> marks = findMostRecentAttendanceMarks(attendanceMarkRepository.findByCourseId(courseId));
+        return new ResponseEntity<>(marks, HttpStatus.OK);
+    } 
+
     public static List<AttendanceMark> findMostRecentAttendanceMarks(List<AttendanceMark> marks){
         if (marks.isEmpty()){
             return new ArrayList<>();
         }
         else {
             AttendanceMark maxDayMark = Collections.max(marks, Comparator.comparing(AttendanceMark::getDayNumber));
-            return marks.stream().filter((mark)-> mark.getDayNumber() == maxDayMark.getDayNumber()).toList();    
+            return marks.stream().filter((mark)-> mark.getDayNumber() == maxDayMark.getDayNumber()).collect(Collectors.toList());    
         }
      }
 
