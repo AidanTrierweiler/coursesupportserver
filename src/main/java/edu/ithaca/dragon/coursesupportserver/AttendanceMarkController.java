@@ -1,5 +1,8 @@
 package edu.ithaca.dragon.coursesupportserver;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,6 +60,16 @@ public class AttendanceMarkController {
         }
     }
 
+    public static List<AttendanceMark> findMostRecentAttendanceMarks(List<AttendanceMark> marks){
+        if (marks.isEmpty()){
+            return new ArrayList<>();
+        }
+        else {
+            AttendanceMark maxDayMark = Collections.max(marks, Comparator.comparing(AttendanceMark::getDayNumber));
+            return marks.stream().filter((mark)-> mark.getDayNumber() == maxDayMark.getDayNumber()).toList();    
+        }
+     }
+
     @PostMapping("/attendanceMarks")
     public ResponseEntity<List<AttendanceMark>> recordAttendance(@RequestBody List<AttendanceMark> attendanceMarks){
         try {
@@ -87,4 +100,20 @@ public class AttendanceMarkController {
         }
         return  new AttendanceCourseReport(courseId, student2marks.values());
     } 
+
+    @GetMapping("/courseIds")
+    public ResponseEntity<List<String>> findAllCourseIds(){
+        return new ResponseEntity<>(findAllCourseIds(attendanceMarkRepository.findAll()), HttpStatus.OK);
+    } 
+
+    public static List<String> findAllCourseIds(List<AttendanceMark> marks){
+        List<String> courseIds = new ArrayList<>();
+        for (AttendanceMark mark : marks){
+            if (!courseIds.contains(mark.getCourseId())){
+                courseIds.add(mark.getCourseId());
+            }
+        }
+        return courseIds;
+    }
+
 }
