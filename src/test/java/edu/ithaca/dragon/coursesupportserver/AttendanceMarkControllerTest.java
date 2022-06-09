@@ -43,18 +43,6 @@ public class AttendanceMarkControllerTest {
         mockMvc.perform(get("/api/attendanceMarks?courseId=COMP220"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.size()").value(30));
-        
-        //findByStudentId
-        List<AttendanceMark> marksForKatie = AttendanceMarkRespositoryExamples.basicTestRepoList().stream().filter(mark-> mark.getStudentId().equals( "Katie")).collect(Collectors.toList());
-        when(attendanceMarkRepository.findByStudentId("Katie")).thenReturn(marksForKatie);
-        mockMvc.perform(get("/api/attendanceMarks?studentId=Katie"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.size()").value(12));
-
-        //findByBoth
-        mockMvc.perform(get("/api/attendanceMarks?studentId=Katie&courseId=COMP220"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.size()").value(6));
     }
 
     @Test
@@ -76,7 +64,7 @@ public class AttendanceMarkControllerTest {
     public void generateAttendanceReportTest() throws Exception {
         List<AttendanceMark> marksFor220 = AttendanceMarkRespositoryExamples.basicTestRepoList().stream().filter(mark-> mark.getCourseId().equals( "COMP220")).collect(Collectors.toList());
         AttendanceCourseReport report = AttendanceMarkController.generateAttendanceReport("COMP220", marksFor220);
-        JsonUtil.toJsonFile("src/test/java/edu/ithaca/dragon/coursesupportserver/AttendanceCourseReportExample.json", report);
+        JsonUtil.toJsonFile("src/test/java/edu/ithaca/dragon/coursesupportserver/examples/AttendanceCourseReportExample.json", report);
     }
 
     @Test
@@ -94,6 +82,7 @@ public class AttendanceMarkControllerTest {
         for (AttendanceMark mark: marks){
             assertEquals(6, mark.getDayNumber());
         }
+        JsonUtil.toJsonFile("src/test/java/edu/ithaca/dragon/coursesupportserver/examples/AttendanceMarksExample.json", marks);
 
         List<AttendanceMark> marksFor172 = AttendanceMarkRespositoryExamples.basicTestRepoList().stream().filter(mark-> mark.getCourseId().equals( "COMP172")).collect(Collectors.toList());
         marks = AttendanceMarkController.findMostRecentAttendanceMarks(marksFor172);

@@ -31,22 +31,22 @@ public class AttendanceMarkController {
     AttendanceMarkRepository attendanceMarkRepository;
 
     @GetMapping("/attendanceMarks")
-    public ResponseEntity<List<AttendanceMark>> getAllAttendanceMarks(
+    public ResponseEntity<List<AttendanceMark>> getAttendanceMarks(
         @RequestParam(required=false) String courseId, 
-        @RequestParam(required=false) String studentId
+        @RequestParam(defaultValue= "-1") int dayNumber
     ){
         List<AttendanceMark> responses=null;
-        if (studentId!=null){
-            if (courseId != null){
-                responses = attendanceMarkRepository.findByStudentId(studentId).stream().filter(response -> response.getCourseId().equals(courseId)).collect(Collectors.toList());
+        if (courseId!=null){
+            if (dayNumber > 0){
+                responses = attendanceMarkRepository.findByCourseIdAndDayNumber(courseId, dayNumber);
             }
             else {
-                responses = attendanceMarkRepository.findByStudentId(studentId);
+                responses = attendanceMarkRepository.findByCourseId(courseId);
             }
         }
         else{
-            if (courseId!=null){
-                responses = attendanceMarkRepository.findByCourseId(courseId);
+            if (dayNumber > 0){
+                responses = attendanceMarkRepository.findByDayNumber(dayNumber);
             }
             else {
                 responses = attendanceMarkRepository.findAll();
