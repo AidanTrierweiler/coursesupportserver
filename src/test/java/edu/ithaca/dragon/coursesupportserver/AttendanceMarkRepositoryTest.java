@@ -25,6 +25,7 @@ public class AttendanceMarkRepositoryTest {
 
     @Test
     public void testFindByCourseId(){
+        assertTrue(basicTestRepo.findAll().isEmpty());
         basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(30, basicTestRepo.findByCourseId("COMP220").size());
         assertEquals(24, basicTestRepo.findByCourseId("COMP172").size());
@@ -34,6 +35,7 @@ public class AttendanceMarkRepositoryTest {
 
     @Test
     public void testFindByStudentId(){
+        assertTrue(basicTestRepo.findAll().isEmpty());
         basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(12, basicTestRepo.findByStudentId("Katie").size());
         assertEquals(12, basicTestRepo.findByStudentId("Jose").size());
@@ -45,6 +47,7 @@ public class AttendanceMarkRepositoryTest {
     
     @Test
     public void testFindByDayNumber(){
+        assertTrue(basicTestRepo.findAll().isEmpty());
         basicTestRepo.saveAll(AttendanceMarkRespositoryExamples.basicTestRepoList());
         assertEquals(9, basicTestRepo.findByDayNumber(1).size());
         assertEquals(9, basicTestRepo.findByDayNumber(2).size());

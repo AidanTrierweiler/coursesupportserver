@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +75,7 @@ public class AttendanceMarkController {
             AttendanceMark maxDayMark = Collections.max(marks, Comparator.comparing(AttendanceMark::getDayNumber));
             return marks.stream().filter((mark)-> mark.getDayNumber() == maxDayMark.getDayNumber()).collect(Collectors.toList());    
         }
-     }
+    }
 
     @PostMapping("/attendanceMarks")
     public ResponseEntity<List<AttendanceMark>> recordAttendance(@RequestBody List<AttendanceMark> attendanceMarks){
@@ -84,6 +85,23 @@ public class AttendanceMarkController {
           } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/attendanceMarks")
+    public ResponseEntity<List<AttendanceMark>> updateAttendance(@RequestBody List<AttendanceMark> attendanceMarksIn) {
+        List<AttendanceMark> responses = new ArrayList<>();
+        for (AttendanceMark attendanceMarkIn : attendanceMarksIn){
+            List<AttendanceMark> marksInRepo = attendanceMarkRepository.findByCourseIdAndDayNumberAndStudentId(attendanceMarkIn.getCourseId(), attendanceMarkIn.getDayNumber(), attendanceMarkIn.getStudentId());
+            if (marksInRepo.size() == 1){
+                AttendanceMark markInRepo = marksInRepo.get(0);
+                markInRepo.setStatus(attendanceMarkIn.getStatus());
+                responses.add(attendanceMarkRepository.save(markInRepo));
+            }
+            else {
+                System.err.println("Warn: Expected to find 1 single attendanceMark matching: " + attendanceMarkIn + "but instead found " + marksInRepo.size() + ". Skipping this update");
+            }
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/attendanceReport")

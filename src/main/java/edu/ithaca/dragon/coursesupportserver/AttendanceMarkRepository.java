@@ -9,4 +9,5 @@ public interface AttendanceMarkRepository extends JpaRepository<AttendanceMark, 
     List<AttendanceMark> findByDayNumber(int dayNumber);
     List<AttendanceMark> findByCourseId(String courseId);
     List<AttendanceMark> findByCourseIdAndDayNumber(String courseId, int dayNumber);
+    List<AttendanceMark> findByCourseIdAndDayNumberAndStudentId(String courseId, int dayNumber, String studentId);
 }
