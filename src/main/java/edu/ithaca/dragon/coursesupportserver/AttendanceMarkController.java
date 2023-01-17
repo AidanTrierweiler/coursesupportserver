@@ -28,8 +28,14 @@ import edu.ithaca.dragon.coursesupportserver.reportmodel.AttendanceStudentReport
 @RestController
 @RequestMapping("/api")
 public class AttendanceMarkController {
-    @Autowired
-    AttendanceMarkRepository attendanceMarkRepository;
+
+    private final AttendanceMarkRepository attendanceMarkRepository;
+
+
+    public AttendanceMarkController(AttendanceMarkRepository attendanceMarkRepository) {
+        this.attendanceMarkRepository = attendanceMarkRepository;
+    }
+
 
     @GetMapping("/attendanceMarks")
     public ResponseEntity<List<AttendanceMark>> getAttendanceMarks(
