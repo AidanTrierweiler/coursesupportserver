@@ -39,7 +39,8 @@ public class StudentControllerTest {
     @Test
     void testCreateStudent() throws Exception {
         Student student = new Student("katie123", "Katie");
-        when(studentRepository.save(student)).thenReturn(student);
+        // Use ArgumentMatchers.any(Student.class) to allow any Student object
+        when(studentRepository.save(org.mockito.ArgumentMatchers.any(Student.class))).thenReturn(student);
 
         mockMvc.perform(post("/api/students")
                 .contentType("application/json")

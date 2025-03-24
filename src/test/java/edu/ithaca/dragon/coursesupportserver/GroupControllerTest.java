@@ -40,7 +40,9 @@ public class GroupControllerTest {
     @Test
     void testCreateGroup() throws Exception {
         Group group = new Group("Group1", Arrays.asList("student1", "student2"));
-        when(groupRepository.save(group)).thenReturn(group);
+
+        // Use `any()` to match any Group object
+        when(groupRepository.save(org.mockito.ArgumentMatchers.any(Group.class))).thenReturn(group);
 
         mockMvc.perform(post("/api/groups")
                 .contentType("application/json")

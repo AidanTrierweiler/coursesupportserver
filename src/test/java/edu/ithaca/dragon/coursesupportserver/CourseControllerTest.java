@@ -40,7 +40,8 @@ public class CourseControllerTest {
     @Test
     void testCreateCourse() throws Exception {
         Course course = new Course("COMP220", "Data Structures");
-        when(courseRepository.save(course)).thenReturn(course);
+        // Use ArgumentMatchers.any(Course.class) so any Course object is matched
+        when(courseRepository.save(org.mockito.ArgumentMatchers.any(Course.class))).thenReturn(course);
 
         mockMvc.perform(post("/api/courses")
                 .contentType("application/json")
@@ -49,4 +50,5 @@ public class CourseControllerTest {
                 .andExpect(jsonPath("$.courseId").value("COMP220"))
                 .andExpect(jsonPath("$.courseName").value("Data Structures"));
     }
+
 }
