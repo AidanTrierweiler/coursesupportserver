@@ -4,9 +4,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,8 +29,10 @@ public class GroupControllerTest {
 
     @Test
     void testGetAllGroups() throws Exception {
-        List<Group> groups = Arrays.asList(new Group("Group1", Arrays.asList("student1", "student2")),
-                new Group("Group2", Arrays.asList("student3", "student4")));
+        // Existing test for retrieving groups
+        List<Group> groups = List.of(
+                new Group("Group1", List.of("student1", "student2")),
+                new Group("Group2", List.of("student3", "student4")));
         when(groupRepository.findAll()).thenReturn(groups);
 
         mockMvc.perform(get("/api/groups"))
@@ -38,8 +45,33 @@ public class GroupControllerTest {
     }
 
     @Test
+    void testGetAllGroupsSchemaValidation() throws Exception {
+        // New test for schema validation
+        List<Group> groups = List.of(
+                new Group("Group1", List.of("student1", "student2")),
+                new Group("Group2", List.of("student3", "student4")));
+        when(groupRepository.findAll()).thenReturn(groups);
+
+        String jsonResponse = mockMvc.perform(get("/api/groups"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String schemaPath = "schemas/group.schema.json";
+        String schemaString = new String(
+                Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(schemaPath).toURI())));
+        Schema schema = SchemaLoader.load(new JSONObject(schemaString));
+
+        JSONArray jsonArray = new JSONArray(jsonResponse);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            schema.validate(jsonArray.getJSONObject(i)); // Throws exception if validation fails
+        }
+    }
+
+    @Test
     void testCreateGroup() throws Exception {
-        Group group = new Group("Group1", Arrays.asList("student1", "student2"));
+        Group group = new Group("Group1", List.of("student1", "student2"));
 
         // Use `any()` to match any Group object
         when(groupRepository.save(org.mockito.ArgumentMatchers.any(Group.class))).thenReturn(group);

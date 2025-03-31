@@ -4,9 +4,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,6 +55,31 @@ public class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.courseId").value("COMP220"))
                 .andExpect(jsonPath("$.courseName").value("Data Structures"));
+    }
+
+    @Test
+    void testGetAllCoursesSchemaValidation() throws Exception {
+        // New test for schema validation
+        List<Course> courses = List.of(
+                new Course("COMP220", "Data Structures"),
+                new Course("COMP172", "Intro to Programming"));
+        when(courseRepository.findAll()).thenReturn(courses);
+
+        String jsonResponse = mockMvc.perform(get("/api/courses"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String schemaPath = "schemas/course.schema.json";
+        String schemaString = new String(
+                Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(schemaPath).toURI())));
+        Schema schema = SchemaLoader.load(new JSONObject(schemaString));
+
+        JSONArray jsonArray = new JSONArray(jsonResponse);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            schema.validate(jsonArray.getJSONObject(i)); // Throws exception if validation fails
+        }
     }
 
 }
