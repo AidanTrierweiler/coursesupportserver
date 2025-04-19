@@ -53,7 +53,7 @@ public class StudentControllerTest {
         mockMvc.perform(post("/api/students")
                 .contentType("application/json")
                 .content("{\"netpass\":\"katie123\",\"preferredName\":\"Katie\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated()) // Expect 201 Created
                 .andExpect(jsonPath("$.netpass").value("katie123"))
                 .andExpect(jsonPath("$.preferredName").value("Katie"));
     }

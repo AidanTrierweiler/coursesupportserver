@@ -1,6 +1,8 @@
 package edu.ithaca.dragon.coursesupportserver;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +16,16 @@ public class GroupController {
     private GroupRepository groupRepository;
 
     @PostMapping
-    public Group createGroup(@RequestBody Group group) {
-        return groupRepository.save(group);
+    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
+        Group savedGroup = groupRepository.save(group);
+        return new ResponseEntity<>(savedGroup, HttpStatus.CREATED); // Explicitly return 201 Created
     }
 
     @GetMapping
-    public List<Group> getAllGroups() {
-        return groupRepository.findAll();
+    public List<Group> getAllGroups(@RequestParam(required = false) String name) {
+        if (name != null) {
+            return groupRepository.findByName(name); // Filter by name if provided
+        }
+        return groupRepository.findAll(); // Return all groups if no filter is provided
     }
 }
