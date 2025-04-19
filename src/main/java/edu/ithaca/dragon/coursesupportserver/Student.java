@@ -10,10 +10,10 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "netpass")
+    @Column(name = "netpass", unique = true, nullable = false)
     private String netpass;
 
-    @Column(name = "preferred_name")
+    @Column(name = "preferred_name", nullable = false)
     private String preferredName;
 
     public Student() {
