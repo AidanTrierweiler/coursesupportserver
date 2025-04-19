@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,6 +18,11 @@ public class CourseRepositoryTest {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @BeforeEach
+    public void clearDatabase() {
+        courseRepository.deleteAll(); // Clear the database before each test
+    }
 
     @Test
     public void testSave() {
