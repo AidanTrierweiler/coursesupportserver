@@ -67,8 +67,7 @@ public class StudentControllerIntegrationTest {
         // GET students filtered by netpass
         mockMvc.perform(get("/api/students?netpass=john123"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1)) // Expect only 1 student
-                .andExpect(jsonPath("$[0].netpass").value("john123"))
-                .andExpect(jsonPath("$[0].preferredName").value("John Doe"));
+                .andExpect(jsonPath("$.netpass").value("john123")) // Expect only 1 student
+                .andExpect(jsonPath("$.preferredName").value("John Doe"));
     }
 }

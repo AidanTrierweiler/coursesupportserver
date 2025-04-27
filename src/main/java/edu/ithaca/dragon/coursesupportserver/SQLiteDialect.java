@@ -53,7 +53,7 @@ public class SQLiteDialect extends Dialect {
 
         @Override
         public String getIdentityColumnString(int type) {
-            return "INTEGER";
+            return "";
         }
 
         @Override

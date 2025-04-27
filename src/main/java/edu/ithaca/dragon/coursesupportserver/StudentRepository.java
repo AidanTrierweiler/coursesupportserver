@@ -1,10 +1,11 @@
 package edu.ithaca.dragon.coursesupportserver;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-
-    List<Student> findByNetpass(String netpass);
+    Optional<Student> findByNetpass(String netpass);
 }
