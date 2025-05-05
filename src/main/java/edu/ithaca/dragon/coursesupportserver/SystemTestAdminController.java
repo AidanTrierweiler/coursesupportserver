@@ -49,8 +49,8 @@ public class SystemTestAdminController {
                 attendanceMark5, attendanceMark6));
 
         // Insert groups
-        Group group1 = new Group("Group A", null);
-        Group group2 = new Group("Group B", null);
+        Group group1 = new Group("2023-10-01", "[[ally, kate, brendan]; [sasha, connie, eren]; [rick, omar, kevin]]");
+        Group group2 = new Group("2023-10-02", "[[john, jane]; [alex, emily]]");
         groupRepository.saveAll(List.of(group1, group2));
 
         // Insert courses

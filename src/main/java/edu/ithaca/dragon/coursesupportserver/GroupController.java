@@ -24,8 +24,17 @@ public class GroupController {
     @GetMapping
     public List<Group> getAllGroups(@RequestParam(required = false) String name) {
         if (name != null) {
-            return groupRepository.findByName(name); // Filter by name if provided
+            return groupRepository.findByName(name)
+                    .map(List::of) // Wrap the result in a list
+                    .orElseThrow(() -> new IllegalArgumentException("Group not found with name: " + name));
         }
         return groupRepository.findAll(); // Return all groups if no filter is provided
+    }
+
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
+        return groupRepository.findByName(name)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new IllegalArgumentException("Group not found with name: " + name));
     }
 }

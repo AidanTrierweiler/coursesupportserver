@@ -3,7 +3,6 @@ package edu.ithaca.dragon.coursesupportserver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test") // Activate the "test" profile for H2
-
 public class GroupRepositoryTest {
 
     @Autowired
@@ -28,16 +26,29 @@ public class GroupRepositoryTest {
     @Test
     public void testSave() {
         assertTrue(groupRepository.findAll().isEmpty());
-        groupRepository.save(new Group("Group1", Arrays.asList("student1", "student2")));
+
+        // Save a group with subgroups as plain text
+        String subgroups = "[[ally, kate, brendan]; [sasha, connie, eren]; [rick, omar, kevin]]";
+        groupRepository.save(new Group("2023-10-01", subgroups));
+
+        // Verify the group was saved
         List<Group> groups = groupRepository.findAll();
         assertEquals(1, groups.size());
+        assertEquals("2023-10-01", groups.get(0).getName());
+        assertEquals(subgroups, groups.get(0).getSubgroups());
     }
 
     @Test
     public void testFindByName() {
-        groupRepository.save(new Group("Group1", Arrays.asList("student1", "student2")));
-        groupRepository.save(new Group("Group2", Arrays.asList("student3", "student4")));
-        assertEquals(1, groupRepository.findAll().stream().filter(group -> group.getName().equals("Group1")).count());
-        assertEquals(1, groupRepository.findAll().stream().filter(group -> group.getName().equals("Group2")).count());
+        // Save groups
+        String subgroups1 = "[[ally, kate, brendan]; [sasha, connie, eren]]";
+        String subgroups2 = "[[john, jane]; [alex, emily]]";
+        groupRepository.save(new Group("2023-10-01", subgroups1));
+        groupRepository.save(new Group("2023-10-02", subgroups2));
+
+        // Find by name
+        Group group = groupRepository.findByName("2023-10-01").orElseThrow();
+        assertEquals("2023-10-01", group.getName());
+        assertEquals(subgroups1, group.getSubgroups());
     }
 }

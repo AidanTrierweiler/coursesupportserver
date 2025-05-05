@@ -1,7 +1,6 @@
 package edu.ithaca.dragon.coursesupportserver;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "groups")
@@ -11,20 +10,18 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "group_students", joinColumns = @JoinColumn(name = "group_id"))
-    @Column(name = "student_id")
-    private List<String> studentIds;
+    @Column(name = "subgroups", columnDefinition = "TEXT") // Store subgroups as plain text
+    private String subgroups;
 
     public Group() {
     }
 
-    public Group(String name, List<String> studentIds) {
+    public Group(String name, String subgroups) {
         this.name = name;
-        this.studentIds = studentIds;
+        this.subgroups = subgroups;
     }
 
     // Getters and setters
@@ -44,11 +41,11 @@ public class Group {
         this.name = name;
     }
 
-    public List<String> getStudentIds() {
-        return studentIds;
+    public String getSubgroups() {
+        return subgroups;
     }
 
-    public void setStudentIds(List<String> studentIds) {
-        this.studentIds = studentIds;
+    public void setSubgroups(String subgroups) {
+        this.subgroups = subgroups;
     }
 }
