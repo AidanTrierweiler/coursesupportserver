@@ -1,6 +1,7 @@
 package edu.ithaca.dragon.coursesupportserver;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -10,11 +11,14 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "course_id")
+    @Column(name = "course_id", unique = true, nullable = false)
     private String courseId;
 
-    @Column(name = "course_name")
+    @Column(name = "course_name", nullable = false)
     private String courseName;
+
+    @ManyToMany(mappedBy = "courses") // Bidirectional relationship
+    private Set<Student> students;
 
     public Course() {
     }
@@ -47,5 +51,13 @@ public class Course {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 }

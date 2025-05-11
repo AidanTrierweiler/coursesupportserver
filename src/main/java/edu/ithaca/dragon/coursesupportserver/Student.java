@@ -1,6 +1,7 @@
 package edu.ithaca.dragon.coursesupportserver;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "students")
@@ -15,6 +16,13 @@ public class Student {
 
     @Column(name = "preferred_name", nullable = false)
     private String preferredName;
+
+    @ManyToMany
+    @JoinTable(name = "student_courses", // Name of the join table
+            joinColumns = @JoinColumn(name = "student_id"), // Foreign key in the join table referencing Student
+            inverseJoinColumns = @JoinColumn(name = "course_id") // Foreign key in the join table referencing Course
+    )
+    private Set<Course> courses;
 
     public Student() {
     }
@@ -47,5 +55,13 @@ public class Student {
 
     public void setPreferredName(String preferredName) {
         this.preferredName = preferredName;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 }

@@ -23,13 +23,19 @@ public class StudentController {
         return new ResponseEntity<>(savedStudent, HttpStatus.CREATED); // Explicitly return 201 Created
     }
 
-    // Get all students or filter by netpass
+    // Get all students or filter by courseId
     @GetMapping
-    public ResponseEntity<?> getAllStudents(@RequestParam(required = false) String netpass) {
+    public ResponseEntity<?> getAllStudents(@RequestParam(required = false) String netpass,
+            @RequestParam(required = false) String courseId) {
         if (netpass != null) {
-            Optional<Student> student = studentRepository.findByNetpass(netpass);
-            return student.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+            List<Student> students = studentRepository.findByNetpass(netpass)
+                    .map(List::of)
+                    .orElse(List.of());
+            return ResponseEntity.ok(students);
+        }
+        if (courseId != null) {
+            List<Student> students = studentRepository.findByCourseId(courseId);
+            return ResponseEntity.ok(students);
         }
         return ResponseEntity.ok(studentRepository.findAll());
     }

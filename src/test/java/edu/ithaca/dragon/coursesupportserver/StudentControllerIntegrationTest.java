@@ -64,10 +64,14 @@ public class StudentControllerIntegrationTest {
         Student student2 = new Student("jane456", "Jane Smith");
         studentRepository.saveAll(List.of(student1, student2));
 
+        // Debug: Print all students in the database
+        System.out.println("All students in the database: " + studentRepository.findAll());
+
         // GET students filtered by netpass
         mockMvc.perform(get("/api/students?netpass=john123"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.netpass").value("john123")) // Expect only 1 student
-                .andExpect(jsonPath("$.preferredName").value("John Doe"));
+                .andExpect(jsonPath("$.size()").value(1)) // Expect only 1 student in the response array
+                .andExpect(jsonPath("$[0].netpass").value("john123")) // Access the first element of the array
+                .andExpect(jsonPath("$[0].preferredName").value("John Doe"));
     }
 }
