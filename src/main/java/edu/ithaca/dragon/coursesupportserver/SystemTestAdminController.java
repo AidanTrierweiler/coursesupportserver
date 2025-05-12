@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -34,7 +35,7 @@ public class SystemTestAdminController {
         studentRepository.deleteAll();
         courseRepository.deleteAll();
         responseCounterRepository.deleteAll();
-        groupRepository.deleteAll(); // Clear groups as well
+        groupRepository.deleteAll();
 
         // Insert courses
         Course course1 = new Course("COMP220", "Data Structures");
@@ -47,15 +48,20 @@ public class SystemTestAdminController {
         Student student3 = new Student("alex789", "Alex Johnson");
         Student student4 = new Student("emily321", "Emily Davis");
 
-        student1.setCourses(Set.of(course1, course2)); // John is in both courses
-        student2.setCourses(Set.of(course1)); // Jane is only in COMP220
-        student3.setCourses(Set.of(course2)); // Alex is only in COMP310
-        student4.setCourses(Set.of(course2)); // Emily is only in COMP310
+        student1.setCourses(new HashSet<>(List.of(course1, course2))); // John is in both courses
+        student2.setCourses(new HashSet<>(List.of(course1))); // Jane is only in COMP220
+        student3.setCourses(new HashSet<>(List.of(course2))); // Alex is only in COMP310
+        student4.setCourses(new HashSet<>(List.of(course2))); // Emily is only in COMP310
+
+        course1.setStudents(new HashSet<>(List.of(student1, student2))); // COMP220 has John and Jane
+        course2.setStudents(new HashSet<>(List.of(student1, student3, student4))); // COMP310 has John, Alex, and Emily
 
         studentRepository.saveAll(List.of(student1, student2, student3, student4));
+        courseRepository.saveAll(List.of(course1, course2));
 
         // Debug: Print saved students and their courses
         System.out.println("Saved students: " + studentRepository.findAll());
+        System.out.println("Saved courses: " + courseRepository.findAll());
 
         // Insert attendance marks
         AttendanceMark attendanceMark1 = new AttendanceMark("john123", "COMP220", 1, "present");
@@ -63,6 +69,9 @@ public class SystemTestAdminController {
         AttendanceMark attendanceMark3 = new AttendanceMark("alex789", "COMP310", 1, "present");
         AttendanceMark attendanceMark4 = new AttendanceMark("emily321", "COMP310", 1, "present");
         attendanceMarkRepository.saveAll(List.of(attendanceMark1, attendanceMark2, attendanceMark3, attendanceMark4));
+
+        // Debug: Print saved attendance marks
+        System.out.println("Saved attendance marks: " + attendanceMarkRepository.findAll());
 
         // Insert student response counters
         StudentResponseCounter counter1 = new StudentResponseCounter(student1.getId(), 0, 0);

@@ -1,5 +1,7 @@
 package edu.ithaca.dragon.coursesupportserver;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -17,11 +19,8 @@ public class Student {
     @Column(name = "preferred_name", nullable = false)
     private String preferredName;
 
-    @ManyToMany
-    @JoinTable(name = "student_courses", // Name of the join table
-            joinColumns = @JoinColumn(name = "student_id"), // Foreign key in the join table referencing Student
-            inverseJoinColumns = @JoinColumn(name = "course_id") // Foreign key in the join table referencing Course
-    )
+    @ManyToMany(mappedBy = "students")
+    @JsonIgnore // Prevent circular reference
     private Set<Course> courses;
 
     public Student() {

@@ -17,7 +17,11 @@ public class StudentResponseCounterController {
     @PostMapping("/increment-answered/{studentId}")
     public ResponseEntity<StudentResponseCounter> incrementAnswered(@PathVariable long studentId) {
         Optional<StudentResponseCounter> optionalCounter = responseCounterRepository.findByStudentId(studentId);
-        StudentResponseCounter counter = optionalCounter.orElse(new StudentResponseCounter(studentId, 0, 0));
+        StudentResponseCounter counter = optionalCounter.orElseGet(() -> {
+            StudentResponseCounter newCounter = new StudentResponseCounter(studentId, 0, 0);
+            responseCounterRepository.save(newCounter);
+            return newCounter;
+        });
         counter.setAnsweredCount(counter.getAnsweredCount() + 1);
         responseCounterRepository.save(counter);
         return new ResponseEntity<>(counter, HttpStatus.OK);

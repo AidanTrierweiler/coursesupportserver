@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -14,6 +15,9 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
@@ -27,5 +31,22 @@ public class CourseController {
             return courseRepository.findByCourseId(courseId); // Filter by courseId if provided
         }
         return courseRepository.findAll(); // Return all courses if no filter is provided
+    }
+
+    @GetMapping("/courseIds")
+    public List<String> getCourseIds() {
+        return courseRepository.findAll()
+                .stream()
+                .map(Course::getCourseId)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{courseId}/students")
+    public ResponseEntity<List<Student>> getStudentsByCourseId(@PathVariable String courseId) {
+        List<Student> students = studentRepository.findByCourseId(courseId);
+        if (students.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 }

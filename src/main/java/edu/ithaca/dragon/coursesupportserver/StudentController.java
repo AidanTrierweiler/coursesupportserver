@@ -47,4 +47,16 @@ public class StudentController {
         return student.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // Get students by courseId
+    @GetMapping("/courses/{courseId}/students")
+    public ResponseEntity<List<Student>> getStudentsByCourseId(@PathVariable String courseId) {
+        System.out.println("Fetching students for courseId: " + courseId);
+        List<Student> students = studentRepository.findByCourseId(courseId);
+        System.out.println("Found students: " + students);
+        if (students.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(students, HttpStatus.OK);
+    }
 }

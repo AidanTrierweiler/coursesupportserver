@@ -1,5 +1,7 @@
 package edu.ithaca.dragon.coursesupportserver;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -17,7 +19,8 @@ public class Course {
     @Column(name = "course_name", nullable = false)
     private String courseName;
 
-    @ManyToMany(mappedBy = "courses") // Bidirectional relationship
+    @ManyToMany
+    @JsonManagedReference // Manage serialization
     private Set<Student> students;
 
     public Course() {
