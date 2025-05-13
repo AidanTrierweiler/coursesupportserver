@@ -29,10 +29,13 @@ public class StudentResponseCounterController {
 
     @PostMapping("/increment-passed/{studentId}")
     public ResponseEntity<StudentResponseCounter> incrementPassed(@PathVariable long studentId) {
+        System.out.println("Received request to increment passed count for studentId: " + studentId);
         Optional<StudentResponseCounter> optionalCounter = responseCounterRepository.findByStudentId(studentId);
         StudentResponseCounter counter = optionalCounter.orElse(new StudentResponseCounter(studentId, 0, 0));
+        System.out.println("Current passedCount: " + counter.getPassedCount());
         counter.setPassedCount(counter.getPassedCount() + 1);
         responseCounterRepository.save(counter);
+        System.out.println("Updated passedCount: " + counter.getPassedCount());
         return new ResponseEntity<>(counter, HttpStatus.OK);
     }
 
