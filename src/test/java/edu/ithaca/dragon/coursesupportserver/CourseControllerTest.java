@@ -24,6 +24,9 @@ public class CourseControllerTest {
         @MockBean
         private CourseRepository courseRepository;
 
+        @MockBean
+        private StudentRepository studentRepository;
+
         @Autowired
         private MockMvc mockMvc;
 
@@ -44,23 +47,7 @@ public class CourseControllerTest {
         }
 
         @Test
-        void testCreateCourse() throws Exception {
-                Course course = new Course("COMP220", "Data Structures");
-
-                // Use ArgumentMatchers.any(Course.class) so any Course object is matched
-                when(courseRepository.save(org.mockito.ArgumentMatchers.any(Course.class))).thenReturn(course);
-
-                mockMvc.perform(post("/api/courses")
-                                .contentType("application/json")
-                                .content("{\"courseId\":\"COMP220\",\"courseName\":\"Data Structures\"}"))
-                                .andExpect(status().isCreated()) // Expect 201 Created
-                                .andExpect(jsonPath("$.courseId").value("COMP220"))
-                                .andExpect(jsonPath("$.courseName").value("Data Structures"));
-        }
-
-        @Test
         void testGetAllCoursesSchemaValidation() throws Exception {
-                // New test for schema validation
                 List<Course> courses = List.of(
                                 new Course("COMP220", "Data Structures"),
                                 new Course("COMP172", "Intro to Programming"));

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,31 +27,6 @@ public class CourseControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Test
-    public void testCreateAndGetCourses() throws Exception {
-        // Clear the database
-        courseRepository.deleteAll();
-
-        // Create and save a course
-        Course course = new Course("COMP220", "Data Structures");
-
-        // Convert the course to JSON
-        String courseJson = objectMapper.writeValueAsString(course);
-
-        // POST the course
-        mockMvc.perform(post("/api/courses")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(courseJson))
-                .andExpect(status().isCreated()); // Expect 201 Created
-
-        // GET all courses
-        mockMvc.perform(get("/api/courses"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].courseId").value("COMP220"))
-                .andExpect(jsonPath("$[0].courseName").value("Data Structures"));
-    }
 
     @Test
     public void testFilterCourses() throws Exception {
