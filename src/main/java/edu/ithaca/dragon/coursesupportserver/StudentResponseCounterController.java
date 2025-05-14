@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -44,5 +45,11 @@ public class StudentResponseCounterController {
         Optional<StudentResponseCounter> optionalCounter = responseCounterRepository.findByStudentId(studentId);
         return optionalCounter.map(counter -> new ResponseEntity<>(counter, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/course/{courseId}/students")
+    public ResponseEntity<List<Object[]>> getResponseCountersByCourseId(@PathVariable String courseId) {
+        List<Object[]> responseCounters = responseCounterRepository.findResponseCountersByCourseId(courseId);
+        return new ResponseEntity<>(responseCounters, HttpStatus.OK);
     }
 }
