@@ -16,12 +16,16 @@ public class Group {
     @Column(name = "subgroups", columnDefinition = "TEXT") // Store subgroups as plain text
     private String subgroups;
 
+    @Column(name = "course_id")
+    private String courseId; // or Long courseId if your Course PK is Long
+
     public Group() {
     }
 
-    public Group(String name, String subgroups) {
+    public Group(String name, String subgroups, String courseId) {
         this.name = name;
         this.subgroups = subgroups;
+        this.courseId = courseId;
     }
 
     // Getters and setters
@@ -47,5 +51,13 @@ public class Group {
 
     public void setSubgroups(String subgroups) {
         this.subgroups = subgroups;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 }

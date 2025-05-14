@@ -28,12 +28,14 @@ public class GroupControllerIntegrationTest {
                 groupRepository.deleteAll();
 
                 // Create and save a group
-                String subgroups = "[[ally, kate, brendan]; [sasha, connie, eren]]";
-                Group group = new Group("2023-10-01", subgroups);
+                String subgroups = "group1: ally, kate, brendan; group2: sasha, connie, eren";
+                String courseId = "COMP220";
+                Group group = new Group("2023-10-01", subgroups, courseId);
 
                 // Convert the group to JSON
-                String groupJson = String.format("{\"name\":\"%s\",\"subgroups\":\"%s\"}", group.getName(),
-                                group.getSubgroups());
+                String groupJson = String.format(
+                                "{\"name\":\"%s\",\"subgroups\":\"%s\",\"courseId\":\"%s\"}",
+                                group.getName(), group.getSubgroups(), group.getCourseId());
 
                 // POST the group
                 mockMvc.perform(post("/api/groups")
@@ -46,6 +48,7 @@ public class GroupControllerIntegrationTest {
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.size()").value(1))
                                 .andExpect(jsonPath("$[0].name").value("2023-10-01"))
-                                .andExpect(jsonPath("$[0].subgroups").value(subgroups));
+                                .andExpect(jsonPath("$[0].subgroups").value(subgroups))
+                                .andExpect(jsonPath("$[0].courseId").value(courseId));
         }
 }

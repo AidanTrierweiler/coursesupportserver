@@ -18,17 +18,22 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<Group> createGroup(@RequestBody Group group) {
         Group savedGroup = groupRepository.save(group);
-        return new ResponseEntity<>(savedGroup, HttpStatus.CREATED); // Explicitly return 201 Created
+        return new ResponseEntity<>(savedGroup, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Group> getAllGroups(@RequestParam(required = false) String name) {
+    public List<Group> getAllGroups(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String courseId) {
         if (name != null) {
             return groupRepository.findByName(name)
-                    .map(List::of) // Wrap the result in a list
+                    .map(List::of)
                     .orElseThrow(() -> new IllegalArgumentException("Group not found with name: " + name));
         }
-        return groupRepository.findAll(); // Return all groups if no filter is provided
+        if (courseId != null) {
+            return groupRepository.findByCourseId(courseId);
+        }
+        return groupRepository.findAll();
     }
 
     @GetMapping("/by-name/{name}")

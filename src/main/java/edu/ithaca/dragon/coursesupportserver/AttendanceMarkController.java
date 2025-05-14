@@ -23,40 +23,44 @@ public class AttendanceMarkController {
 
     @GetMapping("/attendanceMarks")
     public ResponseEntity<List<AttendanceMark>> getAllAttendanceMarks(
-        @RequestParam(required=false) String courseId, 
-        @RequestParam(required=false) String studentId
-    ){
-        List<AttendanceMark> responses=null;
-        if (studentId!=null){
-            if (courseId != null){
-                responses = attendanceMarkRepository.findByStudentId(studentId).stream().filter(response -> response.getCourseId().equals(courseId)).collect(Collectors.toList());
+            @RequestParam(required = false) String courseId,
+            @RequestParam(required = false) String studentId,
+            @RequestParam(required = false) Integer dayNumber // <-- add this
+    ) {
+        List<AttendanceMark> responses = null;
+        if (studentId != null) {
+            responses = attendanceMarkRepository.findByStudentId(studentId);
+            if (courseId != null) {
+                responses = responses.stream()
+                        .filter(response -> response.getCourseId().equals(courseId))
+                        .collect(Collectors.toList());
             }
-            else {
-                responses = attendanceMarkRepository.findByStudentId(studentId);
-            }
+        } else if (courseId != null) {
+            responses = attendanceMarkRepository.findByCourseId(courseId);
+        } else {
+            responses = attendanceMarkRepository.findAll();
         }
-        else{
-            if (courseId!=null){
-                responses = attendanceMarkRepository.findByCourseId(courseId);
-            }
-            else {
-                responses = attendanceMarkRepository.findAll();
-            }
+
+        // Filter by dayNumber if provided
+        if (dayNumber != null && responses != null) {
+            responses = responses.stream()
+                    .filter(response -> response.getDayNumber() == dayNumber)
+                    .collect(Collectors.toList());
         }
-        if (responses != null && responses.size() != 0){
+
+        if (responses != null && !responses.isEmpty()) {
             return new ResponseEntity<>(responses, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @PostMapping("/attendanceMarks")
-    public ResponseEntity<List<AttendanceMark>> recordAttendance(@RequestBody List<AttendanceMark> attendanceMarks){
+    public ResponseEntity<List<AttendanceMark>> recordAttendance(@RequestBody List<AttendanceMark> attendanceMarks) {
         try {
             List<AttendanceMark> newDbResponse = attendanceMarkRepository.saveAll(attendanceMarks);
             return new ResponseEntity<>(newDbResponse, HttpStatus.CREATED);
-          } catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
